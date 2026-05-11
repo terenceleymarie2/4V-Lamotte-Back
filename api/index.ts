@@ -41,7 +41,7 @@ app.get('/v2/schedules', async (req: Request, res: Response) => {
     // Si la base est vide, on renvoie un tableau vide
     res.json(schedules || []);
   } catch (error) {
-    res.status(500).json({ error: "Erreur lors de la lecture des données" });
+    res.status(500).json({ error: "Erreur lors de la lecture des données", errorDetails: error instanceof Error ? error.message : String(error) });
   }
 });
 
@@ -52,7 +52,7 @@ app.post('/v2/schedules', async (req: Request, res: Response) => {
     await kv.set('schedules', newSchedules);
     res.json({ success: true });
   } catch (error) {
-    res.status(500).json({ error: "Erreur lors de l'écriture des données" });
+    res.status(500).json({ error: "Erreur lors de l'écriture des données", errorDetails: error instanceof Error ? error.message : String(error) });
   }
 });
 
