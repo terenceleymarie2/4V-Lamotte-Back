@@ -5,6 +5,7 @@ import express, { Request, Response } from "express";
 import { readFile } from "fs/promises";
 import * as path from "path";
 import { Schedule } from "./models/schedule";
+import { error } from "console";
 
 // 1. Charger le .env
 dotenv.config();
@@ -33,9 +34,15 @@ app.get("/schedules", async (req: Request, res: Response) => {
 // Récupérer les données
 app.get('/v2/schedules', async (req: Request, res: Response) => {
   try {
-    const schedules = await get("schedules", { access: 'private' });
-    // Si la base est vide, on renvoie un tableau vide
-    res.json(schedules || []);
+    const result = await get("schedules", { access: 'private' });
+      if (result?.statusCode !== 200) {
+    return res.status(404).json({ error: "Not found", errorDetails: `Blob storage returned status code ${result?.statusCode}` });
+  }
+
+  return res.status(200)
+    .header('Content-Type', result.blob.contentType)
+    .header("X-Content-Type-Options", "nosniff")
+    .json(result.stream);
   } catch (error) {
     res.status(500).json({ error: "Erreur lors de la lecture des données", errorDetails: error instanceof Error ? error.message : String(error) });
   }
