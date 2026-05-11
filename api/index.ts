@@ -1,4 +1,4 @@
-import { get } from '@vercel/blob';
+import { get, put } from '@vercel/blob';
 import cors from "cors";
 import * as dotenv from "dotenv";
 import express, { Request, Response } from "express";
@@ -45,7 +45,7 @@ app.get('/v2/schedules', async (req: Request, res: Response) => {
 app.post('/v2/schedules', async (req: Request, res: Response) => {
   try {
     const newSchedules = req.body;
-    await kv.set('schedules', newSchedules);
+    await put("schedules", newSchedules, { access: 'private' });
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: "Erreur lors de l'écriture des données", errorDetails: error instanceof Error ? error.message : String(error) });
