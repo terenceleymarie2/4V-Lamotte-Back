@@ -4,6 +4,7 @@ import express, { Request, Response } from "express";
 import { readFile, writeFile } from "fs/promises";
 import * as path from "path";
 import { Game, Schedule } from "./models/schedule";
+import { kv } from '@vercel/kv';
 
 // 1. Charger le .env
 dotenv.config();
@@ -33,28 +34,25 @@ app.get("/schedules", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/schedules", async (req: Request, res: Response) => {
+// Récupérer les données
+app.get('/v2/schedules', async (req: Request, res: Response) => {
   try {
-    const { date, games } = req.body as Partial<Schedule>;
-
-    if (!date || !Array.isArray(games) || games.length === 0) {
-      return res.status(400).json({
-        error: "Le body doit contenir une date et un tableau games non vide.",
-      });
-    }
-
-    const schedules = await readSchedules();
-    const nextSchedule: Schedule = {
-      date,
-      games: games as Game[],
-    };
-
-    await writeSchedules({...nextSchedule, ...schedules });
-
-    return res.status(201).json(nextSchedule);
+    const schedules = await kv.get('schedules');
+    // Si la base est vide, on renvoie un tableau vide
+    res.json(schedules || []);
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Erreur lors de l'ajout du schedule" });
+    res.status(500).json({ error: "Erreur lors de la lecture des données" });
+  }
+});
+
+// Mettre à jour les données
+app.post('/v2/schedules', async (req: Request, res: Response) => {
+  try {
+    const newSchedules = req.body;
+    await kv.set('schedules', newSchedules);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: "Erreur lors de l'écriture des données" });
   }
 });
 
