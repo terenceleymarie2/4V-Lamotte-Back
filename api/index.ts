@@ -1,10 +1,10 @@
+import { get } from '@vercel/blob';
 import cors from "cors";
 import * as dotenv from "dotenv";
 import express, { Request, Response } from "express";
-import { readFile, writeFile } from "fs/promises";
+import { readFile } from "fs/promises";
 import * as path from "path";
-import { Game, Schedule } from "./models/schedule";
-import { kv } from '@vercel/kv';
+import { Schedule } from "./models/schedule";
 
 // 1. Charger le .env
 dotenv.config();
@@ -15,10 +15,6 @@ const schedulesFilePath = path.resolve(process.cwd(), "api/data/schedules.json")
 async function readSchedules(): Promise<Schedule[]> {
   const fileContent = await readFile(schedulesFilePath, "utf-8");
   return JSON.parse(fileContent) as Schedule[];
-}
-
-async function writeSchedules(schedules: Schedule[]): Promise<void> {
-  await writeFile(schedulesFilePath, `${JSON.stringify(schedules, null, 4)}\n`, "utf-8");
 }
 
 app.use(cors());
@@ -37,7 +33,7 @@ app.get("/schedules", async (req: Request, res: Response) => {
 // Récupérer les données
 app.get('/v2/schedules', async (req: Request, res: Response) => {
   try {
-    const schedules = await kv.get('schedules');
+    const schedules = await get("schedules", { access: 'private' });
     // Si la base est vide, on renvoie un tableau vide
     res.json(schedules || []);
   } catch (error) {
