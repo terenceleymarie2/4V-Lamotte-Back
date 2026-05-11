@@ -1,4 +1,4 @@
-import * as cors from "cors";
+import cors from "cors";
 import * as dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import * as data  from "./data/schedules.json";
