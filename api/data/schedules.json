@@ -35,19 +35,19 @@
                 "score": null
             },
             {
-                "category": "Club Elite",
-                "hour": "14h55",
-                "field": "17A",
-                "teamA": "4V Loisir",
-                "teamB": "Mash",
-                "score": null
-            },
-            {
                 "category": "Espoirs Féminine Elite",
                 "hour": "15h45",
                 "field": "1",
                 "teamA": "4V Fem Espoirs",
                 "teamB": "Loire sur Rhône",
+                "score": null
+            },
+            {
+                "category": "Club Elite",
+                "hour": "16h55",
+                "field": "17A",
+                "teamA": "4V Loisir",
+                "teamB": "Mash",
                 "score": null
             }
         ]
