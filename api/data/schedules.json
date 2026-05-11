@@ -1,0 +1,60 @@
+[
+    {
+        "date": "2026-05-15",
+        "games": [
+            {
+                "category": "Cadets 4",
+                "hour": "09h35",
+                "field": "2",
+                "teamA": "4V Cadets",
+                "teamB": "Nantes Husse",
+                "score": null
+            },
+            {
+                "category": "Club Excellence Elite",
+                "hour": "14h00",
+                "field": "22A",
+                "teamA": "4V CC",
+                "teamB": "Beautiran",
+                "score": null
+            },
+            {
+                "category": "Club Excellence Elite",
+                "hour": "14h35",
+                "field": "22A",
+                "teamA": "4V CM",
+                "teamB": "Saint Leu",
+                "score": null
+            },
+            {
+                "category": "Club Elite",
+                "hour": "14h55",
+                "field": "17A",
+                "teamA": "4V Loisir",
+                "teamB": "Mash",
+                "score": null
+            },
+            {
+                "category": "Espoirs Féminine Elite",
+                "hour": "15h45",
+                "field": "1",
+                "teamA": "4V Fem Espoirs",
+                "teamB": "Loire sur Rhône",
+                "score": null
+            }
+        ]
+    },
+    {
+        "date": "2026-05-16",
+        "games": [
+            {
+                "category": "Test",
+                "hour": "09h35",
+                "field": "2",
+                "teamA": "TeamA",
+                "teamB": "TeamB",
+                "score": "4-8"
+            }
+        ]
+    }
+]
