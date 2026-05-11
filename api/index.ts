@@ -5,7 +5,6 @@ import express, { Request, Response } from "express";
 import { readFile } from "fs/promises";
 import * as path from "path";
 import { Schedule } from "./models/schedule";
-import { error } from "console";
 
 // 1. Charger le .env
 dotenv.config();
