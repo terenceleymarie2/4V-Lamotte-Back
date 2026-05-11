@@ -43,18 +43,5 @@
                 "score": null
             }
         ]
-    },
-    {
-        "date": "2026-05-16",
-        "games": [
-            {
-                "category": "Test",
-                "hour": "09h35",
-                "field": "2",
-                "teamA": "TeamA",
-                "teamB": "TeamB",
-                "score": "4-8"
-            }
-        ]
     }
 ]
