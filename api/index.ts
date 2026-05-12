@@ -44,6 +44,7 @@ app.get('/v2/schedules', async (req: Request, res: Response) => {
       const formatedDate = format(new Date(row.date), "EEEE dd/MM/yyyy");
       const existingDate = acc.find(item => item.date === formatedDate);
       const game = {
+        id: row.id,
         category: row.category,
         hour: row.hour,
         field: row.field,
