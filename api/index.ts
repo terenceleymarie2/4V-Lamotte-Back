@@ -9,7 +9,6 @@ import { Schedule } from "./models/schedule";
 import { neon } from "@neondatabase/serverless";
 import { groupBy } from "lodash";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale/fr";
 
 // 1. Charger le .env
 dotenv.config();
@@ -43,7 +42,7 @@ app.get('/v2/schedules', async (req: Request, res: Response) => {
   try {
     const result = await sql`SELECT * FROM schedules ORDER BY date desc`;
     const mappedResult = result.map((row: any) => ({
-      formatedDate: format(new Date(row.date), "EEEE dd/MM/yyyy", { locale: fr}),
+      formatedDate: format(new Date(row.date), "EEEE dd/MM/yyyy"),
       date: row.date,
       category: row.category,
       hour: row.hour,
