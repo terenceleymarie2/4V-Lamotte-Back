@@ -78,7 +78,7 @@ app.post('/v2/schedules', async (req: Request, res: Response) => {
   }
 });
 
-app.put('/v2/schedules/:id', async (req: Request, res: Response) => {
+app.patch('/v2/schedules/:id', async (req: Request, res: Response) => {
   try {
     const newSchedule = req.body;
     await sql`UPDATE schedules SET (date, category, hour, field, team_a, team_b, score) = (${newSchedule.date}, ${newSchedule.category}, ${newSchedule.hour}, ${newSchedule.field}, ${newSchedule.teamA}, ${newSchedule.teamB}, ${newSchedule.score}) WHERE id = ${req.params.id}`;
