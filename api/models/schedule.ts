@@ -4,7 +4,7 @@ export interface ScheduleModel {
     category: string;
     hour: string;
     field: string;
-    teamA: string;
-    teamB: string;
+    team_a: string;
+    team_b: string;
     score: string;
 };

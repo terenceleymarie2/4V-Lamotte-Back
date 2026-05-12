@@ -47,8 +47,8 @@ app.get('/v2/schedules', async (req: Request, res: Response) => {
         category: row.category,
         hour: row.hour,
         field: row.field,
-        teamA: row.teamA,
-        teamB: row.teamB,
+        teamA: row.team_a,
+        teamB: row.team_b,
         score: row.score
       };
       if (existingDate) {
