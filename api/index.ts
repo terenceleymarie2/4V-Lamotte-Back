@@ -70,7 +70,7 @@ app.get('/v2/schedules', async (req: Request, res: Response) => {
 app.post('/v2/schedules', async (req: Request, res: Response) => {
   try {
     const newSchedule = req.body;
-    await sql`INSERT INTO schedules (date, category, hour, field, team_a, team_b, score) VALUES (${newSchedule.date}, ${newSchedule.category}, ${newSchedule.hour}, ${newSchedule.field}, ${newSchedule.team_a}, ${newSchedule.team_b}, ${newSchedule.score})`;
+    await sql`INSERT INTO schedules (date, category, hour, field, team_a, team_b, score) VALUES (${newSchedule.date}, ${newSchedule.category}, ${newSchedule.hour}, ${newSchedule.field}, ${newSchedule.teamA}, ${newSchedule.teamB}, ${newSchedule.score})`;
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: "Erreur lors de l'écriture des données", errorDetails: error instanceof Error ? error.message : String(error) });
