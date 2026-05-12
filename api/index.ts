@@ -5,10 +5,11 @@ import * as dotenv from "dotenv";
 import { Request, Response } from "express";
 import { readFile } from "fs/promises";
 import * as path from "path";
-import { Schedule } from "./models/schedule";
+import { Schedule, ScheduleResponse } from "./responses/schedule";
 import { neon } from "@neondatabase/serverless";
 import { groupBy } from "lodash";
 import { format } from "date-fns";
+import { ScheduleModel } from "./models/schedule";
 
 // 1. Charger le .env
 dotenv.config();
@@ -40,19 +41,27 @@ app.get("/schedules", async (req: Request, res: Response) => {
 // Récupérer les données
 app.get('/v2/schedules', async (req: Request, res: Response) => {
   try {
-    const result = await sql`SELECT * FROM schedules ORDER BY date desc`;
-    const mappedResult = result.map((row: any) => ({
-      formatedDate: format(new Date(row.date), "EEEE dd/MM/yyyy"),
-      date: row.date,
-      category: row.category,
-      hour: row.hour,
-      field: row.field,
-      teamA: row.team_a,
-      teamB: row.team_b,
-      score: row.score
-    }));
-    const formattedResult = groupBy(mappedResult, 'formatedDate');
-    res.json(formattedResult);
+    const result: ScheduleModel[] = await sql`SELECT * FROM schedules ORDER BY date desc` as ScheduleModel[];
+    const reduceResult = result.reduce((acc: ScheduleResponse[], row: ScheduleModel) => {
+      const formatedDate = format(new Date(row.date), "EEEE dd/MM/yyyy");
+      const existingDate = acc.find(item => item.date === formatedDate);
+      const game = {
+        category: row.category,
+        hour: row.hour,
+        field: row.field,
+        teamA: row.teamA,
+        teamB: row.teamB,
+        score: row.score
+      };
+      if (existingDate) {
+        existingDate.games.push(game);
+      } else {
+        acc.push({ date: formatedDate, games: [game] });
+      }
+      return acc;
+      
+    }, []);
+    res.json(reduceResult);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Erreur lors de la lecture SQL" });
