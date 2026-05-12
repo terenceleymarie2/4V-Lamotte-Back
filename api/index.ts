@@ -80,7 +80,7 @@ app.post('/v2/schedules', async (req: Request, res: Response) => {
 app.put('/v2/schedules/:id', async (req: Request, res: Response) => {
   try {
     const newSchedule = req.body;
-    await sql`UPDATE schedules SET (date, category, hour, field, team_a, team_b, score) = (${newSchedule.date}, ${newSchedule.category}, ${newSchedule.hour}, ${newSchedule.field}, ${newSchedule.team_a}, ${newSchedule.team_b}, ${newSchedule.score}) WHERE id = ${req.params.id}`;
+    await sql`UPDATE schedules SET (date, category, hour, field, team_a, team_b, score) = (${newSchedule.date}, ${newSchedule.category}, ${newSchedule.hour}, ${newSchedule.field}, ${newSchedule.teamA}, ${newSchedule.teamB}, ${newSchedule.score}) WHERE id = ${req.params.id}`;
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: "Erreur lors de l'écriture des données", errorDetails: error instanceof Error ? error.message : String(error) });
