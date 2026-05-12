@@ -9,7 +9,7 @@ import { Schedule } from "./models/schedule";
 import { neon } from "@neondatabase/serverless";
 import { groupBy } from "lodash";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { fr } from "date-fns/locale/fr";
 
 // 1. Charger le .env
 dotenv.config();
