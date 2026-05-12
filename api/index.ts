@@ -1,7 +1,7 @@
 import { put } from '@vercel/blob';
-import * as cors from "cors";
+import express from 'express';
+import cors from 'cors';
 import * as dotenv from "dotenv";
-import express = require("express");
 import { Request, Response } from "express";
 import { readFile } from "fs/promises";
 import * as path from "path";
