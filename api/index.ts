@@ -1,7 +1,7 @@
 import { neon } from "@neondatabase/serverless";
 import { put } from '@vercel/blob';
 import cors from 'cors';
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import * as dotenv from "dotenv";
 import express, { Request, Response } from 'express';
 import { readFile } from "fs/promises";
@@ -60,7 +60,11 @@ app.get('/v2/schedules', async (req: Request, res: Response) => {
       return acc;
       
     }, []);
-    res.json(reduceResult);
+    const sortedResult = reduceResult.map(item => ({
+      date: item.date,
+      games: item.games.sort((a, b) => parse(a.hour, "HH:mm", new Date()) < parse(b.hour, "HH:mm", new Date()) ? -1 : 1)
+    }));
+    res.json(sortedResult);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Erreur lors de la lecture SQL" });
