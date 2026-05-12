@@ -1,13 +1,21 @@
-import { get, put } from '@vercel/blob';
-import cors from "cors";
+import { put } from '@vercel/blob';
+import * as cors from "cors";
 import * as dotenv from "dotenv";
-import express, { Request, Response } from "express";
+import express = require("express");
+import { Request, Response } from "express";
 import { readFile } from "fs/promises";
 import * as path from "path";
 import { Schedule } from "./models/schedule";
+import { neon } from "@neondatabase/serverless";
+import { groupBy } from "lodash";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 // 1. Charger le .env
 dotenv.config();
+
+const connectionString = `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}/${process.env.PGDATABASE}?sslmode=require`;
+const sql = neon(connectionString);
 
 const app = express();
 const schedulesFilePath = path.resolve(process.cwd(), "api/data/schedules.json");
@@ -33,17 +41,22 @@ app.get("/schedules", async (req: Request, res: Response) => {
 // Récupérer les données
 app.get('/v2/schedules', async (req: Request, res: Response) => {
   try {
-    const result = await get("schedules", { access: 'private' });
-      if (result?.statusCode !== 200) {
-    return res.status(404).json({ error: "Not found", errorDetails: `Blob storage returned status code ${result?.statusCode}` });
-  }
-
-  return res.status(200)
-    .header('Content-Type', result.blob.contentType)
-    .header("X-Content-Type-Options", "nosniff")
-    .json(result.stream);
+    const result = await sql`SELECT * FROM schedules ORDER BY date desc`;
+    const mappedResult = result.map((row: any) => ({
+      formatedDate: format(new Date(row.date), "EEEE dd/MM/yyyy", { locale: fr}),
+      date: row.date,
+      category: row.category,
+      hour: row.hour,
+      field: row.field,
+      teamA: row.team_a,
+      teamB: row.team_b,
+      score: row.score
+    }));
+    const formattedResult = groupBy(mappedResult, 'formatedDate');
+    res.json(formattedResult);
   } catch (error) {
-    res.status(500).json({ error: "Erreur lors de la lecture des données", errorDetails: error instanceof Error ? error.message : String(error) });
+    console.error(error);
+    res.status(500).json({ error: "Erreur lors de la lecture SQL" });
   }
 });
 
@@ -57,5 +70,24 @@ app.post('/v2/schedules', async (req: Request, res: Response) => {
     res.status(500).json({ error: "Erreur lors de l'écriture des données", errorDetails: error instanceof Error ? error.message : String(error) });
   }
 });
+
+app.get("/_health", async (req: Request, res: Response) => {
+  try {
+    await sql`SELECT * FROM schedules ORDER BY date desc`;
+    res.json({ status: "ok" });
+  } catch (error) {
+    res.status(500).json({ status: "error", errorDetails: error instanceof Error ? error.message : String(error) });
+  }
+});
+
+// const PORT = process.env.PORT || 3000;
+// app.listen(PORT, () => {
+//     console.log('---');
+//     console.log(`🚀 Serveur démarré avec succès !`);
+//     console.log(`📡 URL locale : http://localhost:${PORT}`);
+//     console.log(`🗄️  Base de données : Neon PostgreSQL ${connectionString}`);
+//     console.log('---');
+//   });
+
 
 export default app;

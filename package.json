@@ -7,23 +7,27 @@
   "main": "api/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "dev": "ts-node-dev --respawn --transpile-only api/index.ts",
     "clean:dist": "rm -rf dist/",
     "clean:modules": "rm -rf node_modules/",
-    "lint": "eslint --fix './src/**/*.ts' './test/**/*.ts'",
+    "lint": "eslint --fix './api/**/*.ts' './test/**/*.ts'",
     "build": "npm run clean:dist && tsc"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "@vercel/blob": "^2.3.3",
     "@vercel/kv": "^3.0.0",
     "cors": "^2.8.6",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "vercel": "^53.3.2"
+    "lodash": "^4.18.1",
+    "vercel": "^53.4.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/lodash": "^4.17.24",
     "@types/node": "^25.3.5",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
