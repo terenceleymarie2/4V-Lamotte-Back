@@ -5,5 +5,5 @@ dist/
 
 
 .vercel
-.env*
+.env*local
 
