@@ -1,15 +1,13 @@
+import { neon } from "@neondatabase/serverless";
 import { put } from '@vercel/blob';
-import express from 'express';
 import cors from 'cors';
+import { format } from "date-fns";
 import * as dotenv from "dotenv";
-import { Request, Response } from "express";
+import express, { Request, Response } from 'express';
 import { readFile } from "fs/promises";
 import * as path from "path";
-import { Schedule, ScheduleResponse } from "./responses/schedule";
-import { neon } from "@neondatabase/serverless";
-import { groupBy } from "lodash";
-import { format } from "date-fns";
 import { ScheduleModel } from "./models/schedule";
+import { ScheduleResponse } from "./responses/schedule";
 
 // 1. Charger le .env
 dotenv.config();
@@ -20,9 +18,9 @@ const sql = neon(connectionString);
 const app = express();
 const schedulesFilePath = path.resolve(process.cwd(), "api/data/schedules.json");
 
-async function readSchedules(): Promise<Schedule[]> {
+async function readSchedules(): Promise<any[]> {
   const fileContent = await readFile(schedulesFilePath, "utf-8");
-  return JSON.parse(fileContent) as Schedule[];
+  return JSON.parse(fileContent);
 }
 
 app.use(cors());
