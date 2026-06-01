@@ -96,8 +96,7 @@ app.get("/_health", async (req: Request, res: Response) => {
 // Récupérer les données
 app.get('/categories', async (req: Request, res: Response) => {
   try {
-    const competitionFilter: string = req.query.competition as string;
-    const result: CategoryModel[] = await sql`SELECT * FROM categories WHERE competition = ${competitionFilter} ORDER BY category desc` as CategoryModel[];
+    const result: CategoryModel[] = await sql`SELECT * FROM categories ORDER BY competition ASC, category ASC` as CategoryModel[];
     const categoryResponses: CategoryResponse[] = result.map((row: CategoryModel) => {
       const category = {
         id: row.id,
