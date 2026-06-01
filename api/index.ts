@@ -3,8 +3,8 @@ import cors from 'cors';
 import { format, parse } from "date-fns";
 import * as dotenv from "dotenv";
 import express, { Request, Response } from 'express';
-import { ScheduleModel } from "./models/schedule";
-import { ScheduleResponse } from "./responses/schedule";
+import { CategoryModel, ScheduleModel } from "./models/schedule";
+import { CategoryResponse, ScheduleResponse } from "./responses/schedule";
 
 // 1. Charger le .env
 dotenv.config();
@@ -90,6 +90,26 @@ app.get("/_health", async (req: Request, res: Response) => {
     res.json({ status: "ok" });
   } catch (error) {
     res.status(500).json({ status: "error", errorDetails: error instanceof Error ? error.message : String(error) });
+  }
+});
+
+// Récupérer les données
+app.get('/categories', async (req: Request, res: Response) => {
+  try {
+    const competitionFilter: string = req.query.competition as string;
+    const result: CategoryModel[] = await sql`SELECT * FROM categories WHERE competition = ${competitionFilter} ORDER BY category desc` as CategoryModel[];
+    const categoryResponses: CategoryResponse[] = result.map((row: CategoryModel) => {
+      const category = {
+        id: row.id,
+        category: row.category,
+        competition: row.competition
+      };
+      return category;
+    });
+    res.json(categoryResponses);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur lors de la lecture SQL" });
   }
 });
 

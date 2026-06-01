@@ -9,3 +9,9 @@ export interface ScheduleModel {
     team_b: string;
     score: string;
 };
+
+export interface CategoryModel {
+    id: number;
+    competition: string;
+    category: string;
+}
