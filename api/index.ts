@@ -1,11 +1,8 @@
 import { neon } from "@neondatabase/serverless";
-import { put } from '@vercel/blob';
 import cors from 'cors';
 import { format, parse } from "date-fns";
 import * as dotenv from "dotenv";
 import express, { Request, Response } from 'express';
-import { readFile } from "fs/promises";
-import * as path from "path";
 import { ScheduleModel } from "./models/schedule";
 import { ScheduleResponse } from "./responses/schedule";
 
@@ -16,36 +13,22 @@ const connectionString = `postgresql://${process.env.PGUSER}:${process.env.PGPAS
 const sql = neon(connectionString);
 
 const app = express();
-const schedulesFilePath = path.resolve(process.cwd(), "api/data/schedules.json");
-
-async function readSchedules(): Promise<any[]> {
-  const fileContent = await readFile(schedulesFilePath, "utf-8");
-  return JSON.parse(fileContent);
-}
 
 app.use(cors());
 app.use(express.json());
 
-app.get("/schedules", async (req: Request, res: Response) => {
-  try {
-    const schedules = await readSchedules();
-    res.json(schedules);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erreur DB" });
-  }
-});
-
 // Récupérer les données
 app.get('/v2/schedules', async (req: Request, res: Response) => {
   try {
-    const result: ScheduleModel[] = await sql`SELECT * FROM schedules ORDER BY date desc` as ScheduleModel[];
+    const competitionFilter: string = req.query.competition as string;
+    const result: ScheduleModel[] = await sql`SELECT * FROM schedules WHERE competition = ${competitionFilter} ORDER BY date desc` as ScheduleModel[];
     const reduceResult = result.reduce((acc: ScheduleResponse[], row: ScheduleModel) => {
       const formatedDate = format(new Date(row.date), "EEEE dd/MM/yyyy");
       const existingDate = acc.find(item => item.date === formatedDate);
       const game = {
         id: row.id,
         category: row.category,
+        competition: row.competition,
         hour: row.hour,
         field: row.field,
         teamA: row.team_a,
@@ -75,7 +58,7 @@ app.get('/v2/schedules', async (req: Request, res: Response) => {
 app.post('/v2/schedules', async (req: Request, res: Response) => {
   try {
     const newSchedule = req.body;
-    await sql`INSERT INTO schedules (date, category, hour, field, team_a, team_b, score) VALUES (${newSchedule.date}, ${newSchedule.category}, ${newSchedule.hour}, ${newSchedule.field}, ${newSchedule.teamA}, ${newSchedule.teamB}, ${newSchedule.score})`;
+    await sql`INSERT INTO schedules (date, category, hour, field, team_a, team_b, score, competition) VALUES (${newSchedule.date}, ${newSchedule.category}, ${newSchedule.hour}, ${newSchedule.field}, ${newSchedule.teamA}, ${newSchedule.teamB}, ${newSchedule.score}, ${newSchedule.competition})`;
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: "Erreur lors de l'écriture des données", errorDetails: error instanceof Error ? error.message : String(error) });
@@ -85,7 +68,7 @@ app.post('/v2/schedules', async (req: Request, res: Response) => {
 app.patch('/v2/schedules/:id', async (req: Request, res: Response) => {
   try {
     const newSchedule = req.body;
-    await sql`UPDATE schedules SET (date, category, hour, field, team_a, team_b, score) = (${newSchedule.date}, ${newSchedule.category}, ${newSchedule.hour}, ${newSchedule.field}, ${newSchedule.teamA}, ${newSchedule.teamB}, ${newSchedule.score}) WHERE id = ${req.params.id}`;
+    await sql`UPDATE schedules SET (date, category, hour, field, team_a, team_b, score, competition) = (${newSchedule.date}, ${newSchedule.category}, ${newSchedule.hour}, ${newSchedule.field}, ${newSchedule.teamA}, ${newSchedule.teamB}, ${newSchedule.score}, ${newSchedule.competition}) WHERE id = ${req.params.id}`;
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: "Erreur lors de l'écriture des données", errorDetails: error instanceof Error ? error.message : String(error) });
