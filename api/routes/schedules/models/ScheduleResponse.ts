@@ -11,9 +11,3 @@ export type ScheduleResponse = {
   date: string;
   games: GameResponse[];
 };
-
-export type CategoryResponse = {
-  id: number;
-  competition: string;
-  category: string;
-};
