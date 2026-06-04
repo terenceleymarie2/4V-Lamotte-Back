@@ -28,7 +28,7 @@ class SchedulesRouter {
             try {
                 const newSchedule = req.body as CreateScheduleRequest;
                 await SchedulesController.createSchedule(newSchedule);
-                res.status(201);
+                res.sendStatus(201);
             } catch (error) {
                 res.status(500).json({
                 error: "Erreur lors de l'écriture des données",
@@ -41,7 +41,7 @@ class SchedulesRouter {
             try {
                 const newSchedule = req.body as UpdateScheduleRequest;
                 await SchedulesController.updateSchedule(newSchedule);
-                res.status(200);
+                res.sendStatus(200);
             } catch (error) {
                 res.status(500).json({
                 error: "Erreur lors de l'écriture des données",
@@ -54,7 +54,7 @@ class SchedulesRouter {
             try {
                 const scheduleId = req.params.id;
                 await SchedulesController.deleteSchedule(Number(scheduleId));
-                res.status(200);
+                res.sendStatus(200);
             } catch (error) {
                 res.status(500).json({
                 error: "Erreur lors de la suppression des données",
