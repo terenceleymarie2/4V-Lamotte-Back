@@ -39,7 +39,8 @@ class SchedulesRouter {
 
         this.router.patch("/schedules/:id", async (req: Request, res: Response) => {
             try {
-                const newSchedule = req.body as UpdateScheduleRequest;
+                const id = Number(req.params.id);
+                const newSchedule = { id, ...req.body } as UpdateScheduleRequest;
                 await SchedulesController.updateSchedule(newSchedule);
                 res.sendStatus(200);
             } catch (error) {
