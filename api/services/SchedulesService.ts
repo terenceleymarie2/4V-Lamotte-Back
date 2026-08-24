@@ -20,7 +20,7 @@ class SchedulesService {
             const result: ScheduleModel[] = await SchedulesRepository.getSchedulesByCompetition(competition);
 
                     const reduceResult = result.reduce((acc: ScheduleResponse[], row: ScheduleModel) => {
-                      const formatedDate = format(new Date(row.date), "EEEE dd/MM/yyyy", { locale: fr});
+                      const formatedDate = format(new Date(row.date), "EEE dd/MM/yyyy", { locale: fr});
                       const existingDate = acc.find((item) => item.date === formatedDate);
                       const game = SchedulesMapper.toGameResponse(row);
             
