@@ -3,9 +3,8 @@ import { ScheduleResponse } from "../routes/schedules/models/ScheduleResponse";
 import SchedulesRepository from "../repository/SchedulesRepository";
 import { ScheduleModel } from "../repository/models/ScheduleModel";
 import SchedulesMapper from "./mappers/SchedulesMapper";
-import { format, parse } from "date-fns";
+import { parse } from "date-fns";
 import { CreateScheduleRequest, UpdateScheduleRequest } from "../routes/schedules/models/ScheduleRequest";
-import { fr } from "date-fns/locale";
 
 class SchedulesService {
 
