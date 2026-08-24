@@ -5,6 +5,7 @@ import { ScheduleModel } from "../repository/models/ScheduleModel";
 import SchedulesMapper from "./mappers/SchedulesMapper";
 import { format, parse } from "date-fns";
 import { CreateScheduleRequest, UpdateScheduleRequest } from "../routes/schedules/models/ScheduleRequest";
+import { fr } from "date-fns/locale";
 
 class SchedulesService {
 
@@ -19,7 +20,7 @@ class SchedulesService {
             const result: ScheduleModel[] = await SchedulesRepository.getSchedulesByCompetition(competition);
 
                     const reduceResult = result.reduce((acc: ScheduleResponse[], row: ScheduleModel) => {
-                      const formatedDate = format(new Date(row.date), "EEEE dd/MM/yyyy");
+                      const formatedDate = format(new Date(row.date), "EEEE dd/MM/yyyy", { locale: fr});
                       const existingDate = acc.find((item) => item.date === formatedDate);
                       const game = SchedulesMapper.toGameResponse(row);
             
